@@ -1,9 +1,6 @@
-﻿using System.Buffers;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿namespace DayOne;
 
-namespace DayOne;
-
-public class Digit
+internal class Digit
 {
 	public int Value { get; set; }
 	public int Index { get; set; }
@@ -72,14 +69,14 @@ public static class Day1
 		foreach (var value in _searchValues)
 		{
 			int index = 0;
-            while ((index = line.IndexOf(value.Value, index)) >= 0)
-            {
+			while ((index = line.IndexOf(value.Value, index)) >= 0)
+			{
 				numbersPerLine.Add(new Digit { Index = index, Value = value.Key });
 				index += value.Value.Length;
-                
-            }
+
+			}
 		}
 	}
 
-	
+
 }

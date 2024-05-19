@@ -4,16 +4,16 @@ namespace Helpers;
 
 public static class Helpers
 {
-	public static string FindInputTxtFile()
+	public static string FindInputTxtFile(string filename)
 	{
 		string projectDirectory = FindProjectRootDirectory(Directory.GetCurrentDirectory());
-		return FindFileInDirectory(projectDirectory, "input.txt");
+		return FindFileInDirectory(projectDirectory, $"{filename}.txt");
 	}
 
 	private static string FindProjectRootDirectory(string directory)
 	{
 		// Check if the current directory contains a .csproj file
-		if (Directory.GetFiles(directory, "*.csproj").Length > 0)
+		if (Directory.GetFiles(directory, "*.sln").Length > 0)
 		{
 			return directory;
 		}
@@ -25,7 +25,7 @@ public static class Helpers
 			return FindProjectRootDirectory(parentDirectory.FullName);
 		}
 
-		// If we reach the root directory and still no .csproj file found, throw an exception
+		// If we reach the root directory and still no .sln file found, throw an exception
 		throw new DirectoryNotFoundException("No project root directory found.");
 	}
 

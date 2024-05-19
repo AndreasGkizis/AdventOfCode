@@ -44,15 +44,6 @@ public static class Helpers
 				return result;
 			}
 		}
-
 		return null;
-	}
-
-	public static string FindFileInExecDir(string filename)
-	{
-		var curDir = Directory.GetCurrentDirectory();
-		var file = Directory.GetFiles(curDir, filename);
-		var ass = Assembly.GetCallingAssembly();
-		return curDir;
 	}
 }

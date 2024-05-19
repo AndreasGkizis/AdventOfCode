@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Unit_Test.Data;
+﻿namespace Unit_Test.Data;
 public class TestData
 {
 	public static IEnumerable<object[]> Day1_testData()

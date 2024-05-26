@@ -1,4 +1,4 @@
-﻿namespace DayOne;
+﻿namespace Solutions;
 
 internal class Digit
 {

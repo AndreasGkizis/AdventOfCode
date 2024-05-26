@@ -1,4 +1,6 @@
-﻿namespace Solutions;
+﻿using Helpers;
+
+namespace Solutions;
 
 internal class Digit
 {
@@ -24,7 +26,7 @@ public static class Day1
 	public static int Solve(string input)
 	{
 		int result = 0;
-		foreach (string line in input.Split(_splitSeparator, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+		foreach (string line in input.SplitAtNewLine())
 		{
 			List<Digit> lineDigits = new();
 			FindDigitsAsWords(line, lineDigits);

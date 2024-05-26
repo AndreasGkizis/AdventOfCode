@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Helpers;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Solutions;
@@ -12,6 +13,7 @@ public enum DiceColours
 public class Game
 {
 	public DiceSet BLUE { get; set; }
+
 	public DiceSet RED { get; set; }
 	public DiceSet GREEN { get; set; }
 }
@@ -32,12 +34,52 @@ public static class Day2
 		GREEN = new DiceSet { Count = 13, Colour = DiceColours.GREEN }
 	};
 
-	public static int Solve(string input)
+	public static int SolvePart2(string input)
+	{
+		int totalSumOfPower = 0;
+		Dictionary<int, string> gamesDict = new();
+		var games = input.SplitAtNewLine();
+
+		for (int i = 0; i < games.Length; i++)
+		{
+			gamesDict.Add(i, games[i].Split(':')[1]);
+
+			var blueDiceMax = MaxDiceNeeded(gamesDict[i], DiceColours.BLUE);
+			var redDiceMax = MaxDiceNeeded(gamesDict[i], DiceColours.RED);
+			var greenDiceMax = MaxDiceNeeded(gamesDict[i], DiceColours.GREEN);
+
+			var gamePower = blueDiceMax * redDiceMax * greenDiceMax;
+			totalSumOfPower += gamePower;
+		}
+		return totalSumOfPower;
+	}
+
+	private static int MaxDiceNeeded(string game, DiceColours colour)
+	{
+		var matches = FindColourMatchesInGame(game, colour);
+		int max = 0;
+		foreach (var match in matches)
+		{
+			var num = ParseIntoNumber(match, colour);
+			if (num > max)
+			{
+				max = num;
+			}
+		}
+		return max;
+	}
+
+	private static int ParseIntoNumber(Match match, DiceColours colour)
+	{
+		return int.Parse(match.Value.Replace(colour.ToString(), "", StringComparison.OrdinalIgnoreCase).Trim());
+	}
+
+
+	public static int SolvePart1(string input)
 	{
 		int sumOfIds = 0;
-		// break into games
-		var games = input.Split(_splitSeparator, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 		Dictionary<int, string> gamesDict = new();
+		var games = input.SplitAtNewLine();
 
 		for (int i = 0; i < games.Length; i++)
 		{
@@ -58,20 +100,19 @@ public static class Day2
 	// does any single draw go over the max ammount of dice per colour?
 	private static bool IsGameValid(string game, DiceColours colour)
 	{
-		// more than 5 letters word will break this 
-		string pattern = @"\d+\s\w{1,5}";
-		var matches = Regex.Matches(game, pattern).Where(match => match.Success == true && match.Value.EndsWith(colour.ToString(), StringComparison.OrdinalIgnoreCase));
+		var matches = FindColourMatchesInGame(game, colour);
+
 		int dicePerGame = 0;
 		foreach (var match in matches)
 		{
-			string str = match.Value.Replace(colour.ToString(), "", StringComparison.OrdinalIgnoreCase).Trim();
-			var diceCount = int.Parse(str);
+			var diceCount = ParseIntoNumber(match, colour);
 			var bagDiceSet = GetDiceSetByColour(BagContents, colour);
+
 			if (diceCount > bagDiceSet.Count)
 			{
 				return false;
 			}
-			dicePerGame += int.Parse(str);
+			dicePerGame += diceCount;
 		}
 		return true;
 	}
@@ -80,5 +121,12 @@ public static class Day2
 	{
 		PropertyInfo property = typeof(Game).GetProperty(colour.ToString());
 		return property?.GetValue(game) as DiceSet;
+	}
+
+	private static IEnumerable<Match> FindColourMatchesInGame(string game, DiceColours colour)
+	{
+		// more than 5 letters word will break this 
+		string pattern = @"\d+\s\w{1,5}";
+		return Regex.Matches(game, pattern).Where(match => match.Success == true && match.Value.EndsWith(colour.ToString(), StringComparison.OrdinalIgnoreCase));
 	}
 }
